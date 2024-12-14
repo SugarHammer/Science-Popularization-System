@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>所有藏品</title>
+<link href="../css/simpleGridTemplate.css" rel="stylesheet"
+	type="text/css">
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script src="../js/jquery-1.11.3.min.js"></script>
+</head>
+<body>
+	<div class="container">
+		<header class="header">
+			<h4 class="logo">无忧博物馆藏品</h4>
+		</header>
+		<section class="intro">
+			<div class="column">
+				<h3>无忧博物馆</h3>
+				<img src="../images/web.jpg" alt="" class="profile">
+			</div>
+			<div class="column">
+				<p>无忧博物馆拥有藏品数余件，涵盖了从远古时期到当代各个历史阶段社会发展变化不同方面的内容，具有高度的历史价值、科学价值和艺术价值，全面系统完整地展现中华优秀传统文化、革命文化、社会主义先进文化，是中华文明发展史的典藏宝库。
+				</p>
+				<p>作为国家级的博物馆，无忧博物馆建立了一整套严格的藏品保管的规章制度，形成了国家博物馆科学严密的藏品保管体系。同时,加大对馆藏藏品整理工作力度，注重发掘藏品自身的内在价值,发挥其在展览陈列中的印证、具象历史的独特作用,国家博物馆顺应时代和社会发展的要求，把各类藏品信息适时公布于众,实现社会共享博物馆的藏品资源，提升馆藏文物的认知度和社会价值。</p>
+			</div>
+		</section>
+		<main> </main>
+		<!-- Footer Section -->
+		<footer id="contact">
+			<p class="hero_header">GET IN TOUCH WITH ME</p>
+			<div class="button">EMAIL ME</div>
+		</footer>
+	</div>
+
+
+	<script>
+	$.ajax({
+		url:'../user/queryCulturalRelic',
+		success:function(res){
+			var length=res.length/4;
+			console.log(length);
+			
+			for(var i=0;i<length;i++){
+				$('main ').append('<div class="gallery"></div>');
+				for(var j=0;j<4;j++){
+					$('.gallery ').eq(i).append('<div class="thumbnail"></div>');
+				}
+			}
+ 			var space_length = $('.thumbnail').length - res.length;
+			for (var j = space_length; j > 0; j--) {
+				$('main').children('.gallery:last-child').children('.thumbnail').eq(j).remove();
+			} 
+			$('.thumbnail').each(function(index){
+				$(this).append('<a></a>');
+				$(this).children('a').append('<img alt="" width="2000" class="cards"/>');
+				$(this).children('a').append('<button class="glyphicon glyphicon-star-empty" style=" float: right;top: -19px;right: 5px;">收藏</button>');
+				$(this).append('<h3></h3>');
+				$(this).append('<h5></h5>');
+				$(this).append('<h6></h6>');
+				$(this).attr('id',res[index].culturalRelicId);
+				$(this).children('a').children('img').attr('src','../img/'+res[index].img);
+				$(this).children('a').children('button').attr('name',"cn");
+				$(this).children('h3').text(res[index]. culturalRelicName);
+				$(this).children('h5').text(res[index].culturalRelicType);
+				$(this).children('h6').text(res[index].culturalRelicDescription);
+			})
+		}
+	});
+	
+</script>
+	<script type="text/javascript">
+$(document).ready(function () {
+	$('main').delegate('.thumbnail','click',function() {
+		console.log($(this));
+		$.ajax({
+			url : '../user/userEnshrine',
+			data : {
+				name : sessionStorage.getItem('name'),
+				imgId : $(this).attr('id'),
+			},
+			sucess : function(res) {
+				if (res == 'OK') {
+					console.log('成功')
+				}
+			}
+		})
+	});
+})
+</script>
+</body>
+</html>

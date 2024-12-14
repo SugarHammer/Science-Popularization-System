@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+       PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+       "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chen.dao.UserMapper">
+
+	<!-- 用户注册 -->
+	<insert id="insertUser" parameterType="user">
+		insert into user
+		(user_name,user_pwd,user_sex,user_phone,user_email) values
+		(#{userName},#{userPwd},#{userSex},#{userPhone},#{userEmail})
+	</insert>
+
+	<!-- 通过用户名查询用户 -->
+	<select id="userLogin" parameterType="String" resultMap="usermap">
+		select *
+		from user where user_name = #{user_name}
+	</select>
+
+	<update id="updatePwd" parameterType="String">
+		update user set user_pwd =
+		#{user_pwd} where user_name = #{user_name}
+	</update>
+
+	<update id="updateUser" parameterType="user">
+		update user set user_sex =
+		#{userSex},user_email = #{userEmail},user_phone= #{userPhone} where
+		user_name = #{userName}
+	</update>
+
+	<select id="newNotice" resultMap="noticeMap">
+		SELECT * FROM `notice` ORDER BY
+		`release_time` DESC LIMIT 0,4;
+	</select>
+
+	<select id="newCu" resultMap="culturalRelicmap">
+		SELECT * FROM `cultural_relic`
+		ORDER BY `cultural_relic_time` DESC LIMIT 0,4;
+	</select>
+
+	<select id="queryCulturalRelic" resultMap="culturalRelicmap">
+		SELECT * FROM
+		`cultural_relic`
+	</select>
+
+	<select id="queryEnshrine" resultMap="enshrine">
+		SELECT e.id,e.`name`,c.img
+		imgId,c.`cultural_relic_name`
+		cultural_relic_name,c.`cultural_relic_description`
+		cultural_relic_description
+		FROM `enshrine` e,`cultural_relic` c WHERE
+		e.`name`=#{name} AND c.`cultural_relic_id`=e.`img_id`
+	</select>
+
+	<select id="queryEnshrine1" resultMap="enshrine">
+		SELECT * FROM `enshrine`
+		WHERE `name`=#{name} AND `img_id`=#{imgId}
+	</select>
+
+	<insert id="userEnshrine" parameterType="enshrine">
+		INSERT INTO `enshrine`
+		(`name`,`img_id`) VALUES(#{name},#{imgId})
+	</insert>
+
+	<delete id="deleteUserEnshrine" parameterType="Integer">
+		delete from
+		`enshrine` where id=#{id}
+	</delete>
+
+	<resultMap type="user" id="usermap">
+		<id column="user_name" property="userName" />
+		<result column="user_pwd" property="userPwd" />
+		<result column="user_sex" property="userSex" />
+		<result column="user_phone" property="userPhone" />
+		<result column="user_email" property="userEmail" />
+	</resultMap>
+
+	<resultMap type="notice" id="noticeMap">
+		<id column="id" property="id" />
+		<result column="title" property="title" />
+		<result column="publisher" property="publisher" />
+		<result column="content" property="content" />
+		<result column="release_time" property="release_time" />
+	</resultMap>
+
+	<resultMap type="culturalRelic" id="culturalRelicmap">
+		<id column="cultural_relic_id" property="culturalRelicId" />
+		<result column="cultural_relic_name" property="culturalRelicName" />
+		<result column="cultural_relic_type" property="culturalRelicType" />
+		<result column="cultural_relic_description" property="culturalRelicDescription" />
+		<result column="cultural_relic_time" property="culturalRelicTime" />
+		<result column="cultural_relic_number" property="culturalRelicNumber" />
+	</resultMap>
+
+	<resultMap type="enshrine" id="enshrine">
+		<id column="id" property="id" />
+		<result column="name" property="name" />
+		<result column="img_id" property="imgId" />
+		<result column="cultural_relic_name" property="cultural_relic_name" />
+		<result column="cultural_relic_description" property="cultural_relic_description" />
+	</resultMap>
+
+</mapper>

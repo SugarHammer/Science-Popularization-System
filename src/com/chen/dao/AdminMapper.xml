@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+       PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+       "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chen.dao.AdminMapper">
+
+	<!-- 管理员登录 -->
+	<select id="adminLogin" parameterType="admin" resultType="admin">
+		select
+		* from admin where name = #{name}
+	</select>
+
+	<!-- 查询全部用户 -->
+	<select id="queryAllUser" resultMap="usermap">
+		select * from user
+		<where>
+			<if test="userName!=null and userName!='' ">
+				user_name like "%"#{userName}"%"
+			</if>
+		</where>
+		<if test="start!=null and size!=null">
+			limit #{start},#{size}
+		</if>
+	</select>
+
+	<!-- 根据用户名删除用户 -->
+	<delete id="deleteUser" parameterType="String">
+		delete from user where
+		user_name=#{user_name}
+	</delete>
+
+	<!-- 查询总数据数 -->
+	<select id="countUser" resultType="Integer">
+		select count(user_name) from
+		user
+	</select>
+
+	<!-- 根据性别分组查询总数 -->
+	<select id="querySex" resultType="com.chen.vo.userSexVo">
+		SELECT COUNT(user_sex) as
+		value,user_sex as name FROM user GROUP BY user_sex
+	</select>
+
+
+
+	<!-- 查询全部公告 -->
+	<select id="queryNotice" resultMap="noticeMap">
+		select * from notice
+		<if test="start!=null and size!=null">
+			limit #{start},#{size}
+		</if>
+	</select>
+
+	<!-- 根据公告号删除公告 -->
+	<delete id="deleteNotice" parameterType="String">
+		delete from notice where
+		id=#{id}
+	</delete>
+
+	<!-- 查询公告总数 -->
+	<select id="countNotice" resultType="Integer">
+		select count(*) from notice
+	</select>
+
+	<!-- 新增公告 -->
+	<insert id="addNotice" parameterType="notice">
+		insert into notice
+		(id,title,publisher,content,release_time) values
+		(#{id},#{title},#{publisher},#{content},#{release_time})
+	</insert>
+
+	<!-- 更新公告 -->
+	<update id="updateNotice" parameterType="notice">
+		update notice set
+		title=#{title},content=#{content} where id=#{id}
+	</update>
+
+
+
+	<!-- 查询全部文物 -->
+	<select id="queryAllCulturalRelic" resultMap="culturalRelicmap">
+		select * from cultural_relic
+		<where>
+			<if test="culturalRelicName!=null and culturalRelicName!='' ">
+				cultural_relic_name like "%"#{culturalRelicName}"%"
+			</if>
+		</where>
+		<if test="start!=null and size!=null">
+			limit #{start},#{size}
+		</if>
+	</select>
+
+	<!-- 查询文物总数 -->
+	<select id="countCulturalRelic" resultType="Integer">
+		select
+		count(cultural_relic_id) from cultural_relic
+	</select>
+
+	<!-- 根据文物名称删除文物 -->
+	<delete id="deleteCulturalRelic" parameterType="String">
+		delete from
+		cultural_relic where cultural_relic_id=#{cultural_relic_id}
+	</delete>
+
+	<!-- 新增文物 -->
+	<insert id="addCulturalRelic" parameterType="culturalRelic">
+		insert into
+		cultural_relic
+		(cultural_relic_id,cultural_relic_name,cultural_relic_type,cultural_relic_description,cultural_relic_time,img)
+		values
+		(#{culturalRelicId},#{culturalRelicName},#{culturalRelicType},#{culturalRelicDescription},#{culturalRelicTime},#{img})
+	</insert>
+
+	<!-- 更新文物信息 -->
+	<update id="updateCulturalRelic" parameterType="culturalRelic">
+		update
+		cultural_relic set
+		cultural_relic_name=#{culturalRelicName},cultural_relic_type=#{culturalRelicType},cultural_relic_description=#{culturalRelicDescription}
+		where cultural_relic_id=#{culturalRelicId}
+	</update>
+
+
+	<resultMap type="culturalRelic" id="culturalRelicmap">
+		<id column="cultural_relic_id" property="culturalRelicId" />
+		<result column="cultural_relic_name" property="culturalRelicName" />
+		<result column="cultural_relic_type" property="culturalRelicType" />
+		<result column="cultural_relic_description" property="culturalRelicDescription" />
+		<result column="cultural_relic_time" property="culturalRelicTime" />
+		<result column="cultural_relic_number" property="culturalRelicNumber" />
+	</resultMap>
+
+	<resultMap type="user" id="usermap">
+		<id column="user_name" property="userName" />
+		<result column="user_pwd" property="userPwd" />
+		<result column="user_sex" property="userSex" />
+		<result column="user_phone" property="userPhone" />
+		<result column="user_email" property="userEmail" />
+	</resultMap>
+
+	<resultMap type="notice" id="noticeMap">
+		<id column="id" property="id" />
+		<result column="title" property="title" />
+		<result column="publisher" property="publisher" />
+		<result column="content" property="content" />
+		<result column="release_time" property="release_time" />
+	</resultMap>
+
+</mapper>
